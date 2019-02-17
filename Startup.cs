@@ -12,6 +12,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Swashbuckle.AspNetCore.Swagger;
 using Swashbuckle.AspNetCore;
+using System.Reflection;
 
 namespace CoreAvailabilityMiddleware
 {
@@ -34,16 +35,22 @@ namespace CoreAvailabilityMiddleware
             {
                 c.SwaggerDoc("v1", new Info { Title = "My API", Version = "v1" });
             });
+
+            services.AddMiniProfiler(o => o.RouteBasePath = "/profiler");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
+            app.UseMiniProfiler();
+
             app.UseSwagger();
 
             app.UseSwaggerUI(c => {
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
                 c.RoutePrefix = string.Empty;
+                // this custom html has miniprofiler integration
+                c.IndexStream = () => GetType().GetTypeInfo().Assembly.GetManifestResourceStream("CoreAvailabilityMiddleware.index.html");
             });
 
             if (env.IsDevelopment())

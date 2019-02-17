@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Profiling;
 
 namespace CoreAvailabilityMiddleware.Controllers
 {
@@ -14,7 +16,24 @@ namespace CoreAvailabilityMiddleware.Controllers
         [HttpGet]
         public ActionResult<IEnumerable<string>> Get()
         {
-            return new string[] { "value1", "value2" };
+            using (MiniProfiler.Current.Step("Get Values"))
+            {
+                using (MiniProfiler.Current.CustomTiming("Steps", "Step 1"))
+                {
+                    Thread.Sleep(500);
+                }
+
+                using (MiniProfiler.Current.CustomTiming("Steps", "Step 1"))
+                {
+                    Thread.Sleep(998);
+                }
+
+                using (MiniProfiler.Current.CustomTiming("Steps", "Step 1"))
+                {
+                    Thread.Sleep(29);
+                    return new string[] { "value1", "value2" };
+                }
+            }
         }
 
         // GET api/values/5
