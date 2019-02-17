@@ -14,8 +14,8 @@ namespace CoreAvailabilityMiddleware {
             _next = next;
         }
 
-        private async Task<bool> isAPIAvailable() {
-            var apiUrl = "http://demo2430837.mockable.io/Testing";
+        private async Task<bool> isAPIAvailable(IConfiguration config) {
+            var apiUrl = config.GetValue<string>("ApiAvailability");
             using (var httpClient = new HttpClient()) {
                 HttpResponseMessage response = await httpClient.GetAsync(apiUrl);
                 if (response.IsSuccessStatusCode)
@@ -32,11 +32,13 @@ namespace CoreAvailabilityMiddleware {
             IConfiguration config = (IConfiguration)httpContext.RequestServices.
                 GetService(typeof(IConfiguration));
             
-            if (!await isAPIAvailable())
+            if (!await isAPIAvailable(config))
             {
                 httpContext.Response.StatusCode = 403;
                     await httpContext.Response.WriteAsync(
-                        $"<h1>API Not available</h1>");
+                        $"<h1>API Not available, please try again later.</h1>");
+            } else {
+                await _next(httpContext);
             }
         }
     }
