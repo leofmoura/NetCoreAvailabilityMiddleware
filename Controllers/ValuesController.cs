@@ -20,17 +20,17 @@ namespace CoreAvailabilityMiddleware.Controllers
             {
                 using (MiniProfiler.Current.CustomTiming("Steps", "Step 1"))
                 {
-                    Thread.Sleep(500);
+                    Thread.Sleep(12);
                 }
 
-                using (MiniProfiler.Current.CustomTiming("Steps", "Step 1"))
+                using (MiniProfiler.Current.CustomTiming("Steps", "Step 2"))
                 {
-                    Thread.Sleep(998);
+                    Thread.Sleep(33);
                 }
 
-                using (MiniProfiler.Current.CustomTiming("Steps", "Step 1"))
+                using (MiniProfiler.Current.CustomTiming("Steps", "Step 3"))
                 {
-                    Thread.Sleep(29);
+                    Thread.Sleep(3);
                     return new string[] { "value1", "value2" };
                 }
             }
